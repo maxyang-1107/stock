@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 虛擬環境(本機測試用,不要上傳)
+.venv/
+venv/
+env/
+
+# 環境變數(Token 等機密,務必不要 commit)
+.env
+
+# 編輯器/系統
+.DS_Store
+.idea/
+.vscode/
