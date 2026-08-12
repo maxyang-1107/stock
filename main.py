@@ -5,8 +5,8 @@
 用法: python main.py [night_tw | us_morning | jpkr_morning]
 
 night_tw     -> 台灣時間 22:00 執行,今日台股收盤總結
-jpkr_morning -> 台灣時間 08:00 執行,日韓龍頭股開盤前資訊
-us_morning   -> 台灣時間 09:00 執行,美股收盤總結
+jpkr_morning -> 台灣時間 09:00 執行,日韓龍頭股早盤資訊(開盤後約1小時)
+us_morning   -> 台灣時間 09:00 執行,美股收盤總結(前一晚)
 """
 
 import argparse
@@ -147,7 +147,7 @@ def run_us_morning():
 
 def run_jpkr_morning():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    text = f"🗾 *日韓股市開盤前資訊* ({now})\n"
+    text = f"🗾 *日韓股市早盤資訊* ({now})\n"
     text += build_index_section(["日本日經225", "韓國KOSPI"]) + "\n"
     text += build_jpkr_section()
     notifier.send_telegram_message(text)

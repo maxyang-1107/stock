@@ -2,8 +2,9 @@ name: JP KR Morning Summary
 
 on:
   schedule:
-    # UTC 00:00 = 台灣時間 08:00, 週一到週五
-    - cron: '0 0 * * 1-5'
+    # UTC 01:00 = 台灣時間 09:00, 週一到週五
+    # (日韓 08:00 開盤,設在 09:00 才抓得到開盤後約 1 小時的盤中走勢)
+    - cron: '0 1 * * 1-5'
   workflow_dispatch: {}
 
 jobs:
