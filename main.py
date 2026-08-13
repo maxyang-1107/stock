@@ -10,11 +10,19 @@ us_morning   -> 台灣時間 09:00 執行,美股收盤總結(前一晚)
 """
 
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 import config
 import data_sources as ds
 import notifier
+
+# 台灣時間(UTC+8,無日光節約)。用固定 offset 讓標題時間不受執行機器時區影響——
+# GitHub Actions runner 跑在 UTC,若直接用 datetime.now() 標題會慢 8 小時。
+TW_TZ = timezone(timedelta(hours=8))
+
+
+def now_tw():
+    return datetime.now(TW_TZ).strftime("%Y-%m-%d %H:%M")
 
 
 def fmt_quote(name: str, label: str, q):
@@ -128,7 +136,7 @@ def build_news_section(query: str, limit: int = 5):
 
 
 def run_night_tw():
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = now_tw()
     text = f"🌙 *台股今日收盤總結* ({now})\n"
     text += build_index_section(["台灣加權指數"]) + "\n"
     text += build_tw_section()
@@ -137,7 +145,7 @@ def run_night_tw():
 
 
 def run_us_morning():
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = now_tw()
     text = f"🌅 *美股收盤總結* ({now})\n"
     text += build_index_section(["美國S&P500", "美國那斯達克", "美國道瓊"]) + "\n"
     text += build_us_section()
@@ -146,7 +154,7 @@ def run_us_morning():
 
 
 def run_jpkr_morning():
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = now_tw()
     text = f"🗾 *日韓股市早盤資訊* ({now})\n"
     text += build_index_section(["日本日經225", "韓國KOSPI"]) + "\n"
     text += build_jpkr_section()
