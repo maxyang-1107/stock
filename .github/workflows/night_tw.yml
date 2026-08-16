@@ -2,16 +2,16 @@ name: TW Night Summary
 
 on:
   schedule:
-    # UTC 14:00 = 台灣時間 22:00, 週一到週五
-    - cron: '0 14 * * 1-5'
+    # UTC 14:07 = 台灣時間 22:07, 週一到週五(刻意避開整點,減少排隊延遲)
+    - cron: '7 14 * * 1-5'
   workflow_dispatch: {}
 
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
