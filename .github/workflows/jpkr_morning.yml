@@ -2,17 +2,16 @@ name: JP KR Morning Summary
 
 on:
   schedule:
-    # UTC 01:00 = 台灣時間 09:00, 週一到週五
-    # (日韓 08:00 開盤,設在 09:00 才抓得到開盤後約 1 小時的盤中走勢)
-    - cron: '0 1 * * 1-5'
+    # UTC 23:22(前一天)= 台灣時間 07:22, 週一到週五(刻意避開整點,減少排隊延遲)
+    - cron: '22 23 * * 0-4'
   workflow_dispatch: {}
 
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
