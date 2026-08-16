@@ -1,0 +1,21 @@
+name: US Morning Summary
+
+on:
+  schedule:
+    # UTC 00:38 = 台灣時間 08:38, 對應美股週一到週五收盤(台灣時間週二到週六早上,刻意避開整點減少延遲)
+    - cron: '38 0 * * 1-5'
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: python main.py us_morning
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
