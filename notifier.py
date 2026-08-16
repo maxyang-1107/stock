@@ -21,29 +21,9 @@ def send_telegram_message(text: str, parse_mode: str = "Markdown"):
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
 
-    # Telegram 單則訊息上限約 4096 字元,超過就分段送出。
-    # 按「整行」切而非硬切字元:避免把 Markdown(粗體、[標題](連結))切成兩半,
-    # 那會讓 Telegram 解析失敗回 400。單行本身超長時才退回硬切。
+    # Telegram 單則訊息上限約 4096 字元,超過就分段送出
     max_len = 3800
-    chunks = []
-    current = ""
-    for line in text.split("\n"):
-        while len(line) > max_len:  # 極端情況:單行就超過上限
-            if current:
-                chunks.append(current)
-                current = ""
-            chunks.append(line[:max_len])
-            line = line[max_len:]
-        candidate = line if not current else current + "\n" + line
-        if len(candidate) > max_len:
-            chunks.append(current)
-            current = line
-        else:
-            current = candidate
-    if current:
-        chunks.append(current)
-    if not chunks:
-        chunks = [text]
+    chunks = [text[i:i + max_len] for i in range(0, len(text), max_len)] or [text]
 
     for chunk in chunks:
         resp = requests.post(
