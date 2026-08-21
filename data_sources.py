@@ -82,6 +82,8 @@ def get_twse_daily_all(date_str=None):
         return result
 
     tables = data.get("tables") or []
+    for t in tables:
+        print("[TWSE debug]", t.get("title"), t.get("fields"))
 
     # 找出「每日收盤行情」個股表格,以及「價格指數」表格(裡面含加權指數)
     quotes_table = None
@@ -102,6 +104,11 @@ def get_twse_daily_all(date_str=None):
         sign_i = idx.get("漲跌(+/-)")
         diff_i = idx.get("漲跌價差")
         vol_i = idx.get("成交股數")
+        if close_i is not None:
+            if sign_i is None:
+                sign_i = close_i + 1
+            if diff_i is None:
+                diff_i = close_i + 2
 
         for row in quotes_table.get("data", []):
             if code_i is None or close_i is None:
@@ -131,6 +138,13 @@ def get_twse_daily_all(date_str=None):
         sign_i = idx.get("漲跌(+/-)")
         diff_i = idx.get("漲跌點數")
         pct_i = idx.get("漲跌百分比(%)")
+        if close_i is not None:
+            if sign_i is None:
+                sign_i = close_i + 1
+            if diff_i is None:
+                diff_i = close_i + 2
+            if pct_i is None:
+                pct_i = close_i + 3
 
         for row in index_table.get("data", []):
             if name_i is None or str(row[name_i]).strip() != "發行量加權股價指數":
