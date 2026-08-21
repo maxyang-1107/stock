@@ -11,6 +11,8 @@ weekly_tw    -> 每週日 12:00 執行,本週自選股新聞 + 三大法人/外�
 """
 
 import argparse
+import random
+import time
 from datetime import datetime
 
 import config
@@ -33,9 +35,12 @@ def fmt_quote(name: str, label: str, q):
 def build_index_section(index_names):
     lines = ["📊 *大盤指數*"]
     for name in index_names:
-        ticker = config.INDICES[name]
-        q = ds.get_quote(ticker)
-        lines.append(fmt_quote(name, ticker, q))
+        if name == "台灣加權指數":
+            q = ds.get_tw_index_from_twse()
+        else:
+            ticker = config.INDICES[name]
+            q = ds.get_quote(ticker)
+        lines.append(fmt_quote(name, name, q))
     return "\n".join(lines)
 
 
@@ -70,7 +75,9 @@ def build_tw_section():
 def build_us_section():
     lines = ["\n📈 *美股自選*"]
     results = []
-    for ticker in config.US_STOCKS:
+    for i, ticker in enumerate(config.US_STOCKS):
+        if i > 0:
+            time.sleep(0.6 + random.uniform(0, 0.6))  # 降低短時間內連續打 Yahoo 的機率
         q = ds.get_quote(ticker)
         results.append((ticker, q))
 
@@ -92,7 +99,9 @@ def build_us_section():
 def build_jpkr_section():
     lines = ["\n📈 *日韓龍頭股*"]
     combined = {**config.JP_STOCKS, **config.KR_STOCKS}
-    for ticker, name in combined.items():
+    for i, (ticker, name) in enumerate(combined.items()):
+        if i > 0:
+            time.sleep(0.6 + random.uniform(0, 0.6))
         q = ds.get_quote(ticker)
         lines.append(fmt_quote(name, ticker, q))
     return "\n".join(lines)
